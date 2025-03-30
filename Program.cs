@@ -1,4 +1,9 @@
-﻿using System;
+﻿/* SD Picture Viewer Converter
+ * By: TheLastMillennial
+ * Github: https://github.com/TheLastMillennial/SDPictureViewerConverter
+ * */
+
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -14,167 +19,101 @@ using SixLabors.ImageSharp.Processing.Processors.Quantization;
 
 class Program
 {
-    // Predefined color palette and their corresponding numbers
-    //static readonly Color[] Palette = new Color[]
-    //{
-    //    Color.FromArgb(0, 0, 255),     // #0000ff -> 10
-    //    Color.FromArgb(255, 0, 0),     // #ff0000 -> 11
-    //    Color.FromArgb(0, 0, 0),       // #000000 -> 12
-    //    Color.FromArgb(255, 0, 255),   // #ff00ff -> 13
-    //    Color.FromArgb(0, 159, 0),     // #009f00 -> 14
-    //    Color.FromArgb(255, 143, 32),  // #ff8f20 -> 15
-    //    Color.FromArgb(182, 32, 0),    // #b62000 -> 16
-    //    Color.FromArgb(0, 0, 134),     // #000086 -> 17
-    //    Color.FromArgb(0,147,255),     // #0093ff -> 18
-    //    Color.FromArgb(255, 255, 0),   // #ffff00 -> 19
-    //    Color.FromArgb(255, 255, 255), // #ffffff -> 20
-    //    Color.FromArgb(231, 226, 231), // #e7e2e7 -> 21
-    //    Color.FromArgb(199, 195, 199), // #c7c3c7 -> 22
-    //    Color.FromArgb(143, 139, 143), // #8f8b8f -> 23
-    //    Color.FromArgb(81,85,81,255)   // #515551 -> 24 
-    //};
-
-    //static readonly int[] ColorMapping = new int[]
-    //{
-    //    10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,23,24
-    //};
-    // Define the target color palette with the specified colors
-
-
     public static void Main(string[] args)
     {
-
+        Console.WriteLine("Standard Definition Picture Viewer CE\n\n");
         string inputImagePath;
         if (args.Length != 0)
             inputImagePath = args[0];
         else
         {
-            inputImagePath = "C:\\Users\\Brian\\Pictures\\TI-84 Convert\\PuppySmall165.png";
-            //inputImagePath = "C:\\Users\\Brian\\Pictures\\TI-84 Convert\\testColor.png";
-
+            Console.WriteLine("Drag and drop a PNG picture onto this exe file.\nOpen the ReadMe.txt file for more instructions.");
+            return;
         }
 
-        //Rgba32[] globalPalette = new Rgba32[]
-        //    {
-        //        new Rgba32(0, 0, 255),     // #0000ff -> 10
-        //        new Rgba32(255, 0, 0),     // #ff0000 -> 11
-        //        new Rgba32(0, 0, 0),       // #000000 -> 12
-        //        new Rgba32(255, 0, 255),   // #ff00ff -> 13
-        //        new Rgba32(0, 159, 0),     // #009f00 -> 14
-        //        new Rgba32(255, 143, 32),  // #ff8f20 -> 15
-        //        new Rgba32(182, 32, 0),    // #b62000 -> 16
-        //        new Rgba32(0, 0, 134),     // #000086 -> 17
-        //        new Rgba32(0,147,255),     // #0093ff -> 18
-        //        new Rgba32(255, 255, 0),   // #ffff00 -> 19
-        //        new Rgba32(255, 255, 255), // #ffffff -> 20
-        //        new Rgba32(231, 226, 231), // #e7e2e7 -> 21
-        //        new Rgba32(199, 195, 199), // #c7c3c7 -> 22
-        //        new Rgba32(143, 139, 143), // #8f8b8f -> 23
-        //        new Rgba32(81,85,81,255)   // #515551 -> 24 
-        //    };
-
-        string outputImagePath = "output.png";
         // Load the original image
         Bitmap originalImage = new Bitmap(inputImagePath);
 
-        // Resize the image to 320x240
+        // Resize the image to 265x165 since that's the resolution of the TI-84 Plus CE graph screen
         Bitmap resizedImage = ResizeImage(originalImage, 265, 165);
 
-        // Save the output image
-        resizedImage.Save("resized.png", ImageFormat.Png);
+        // Save the resized image
+        resizedImage.Save("temp_resized.png", ImageFormat.Png);
 
-        // Reduce colors with dithering
-        // Load your image
-        Console.WriteLine("Applying dithering and quantization");
+        // Reduce colors and apply dithering
+        Console.WriteLine("Applying dithering and quantization...");
 
-        using (var image = SixLabors.ImageSharp.Image.Load("resized.png"))
+        using (var image = SixLabors.ImageSharp.Image.Load("temp_resized.png"))
         {
-
-            // Convert the palette to the ImageSharp specific Palette type
-
+            // Create a ImageSharp palette using only TI-84 Plus CE colors
             SixLabors.ImageSharp.Color[] globalPalette = new SixLabors.ImageSharp.Color[]
             {
-            new SixLabors.ImageSharp.Color(new Rgba32(255, 0, 0)      ),
-            new SixLabors.ImageSharp.Color(new Rgba32(0, 0, 0)        ),
-            new SixLabors.ImageSharp.Color(new Rgba32(255, 0, 255)    ),
-            new SixLabors.ImageSharp.Color(new Rgba32(0, 159, 0)      ),
-            new SixLabors.ImageSharp.Color(new Rgba32(255, 143, 32)   ),
-            new SixLabors.ImageSharp.Color(new Rgba32(182, 32, 0)     ),
-            new SixLabors.ImageSharp.Color(new Rgba32(0, 0, 134)      ),
-            new SixLabors.ImageSharp.Color(new Rgba32(0, 147, 255)    ),
-            new SixLabors.ImageSharp.Color(new Rgba32(255, 255, 0)    ),
-            new SixLabors.ImageSharp.Color(new Rgba32(255, 255, 255)  ),
-            new SixLabors.ImageSharp.Color(new Rgba32(231, 226, 231)  ),
-            new SixLabors.ImageSharp.Color(new Rgba32(199, 195, 199)  ),
-            new SixLabors.ImageSharp.Color(new Rgba32(143, 139, 143)  ),
-            new SixLabors.ImageSharp.Color(new Rgba32(81, 85, 81)     )
-        }
-        ;
+                new SixLabors.ImageSharp.Color(new Rgba32(255, 0, 0)      ),
+                new SixLabors.ImageSharp.Color(new Rgba32(0, 0, 0)        ),
+                new SixLabors.ImageSharp.Color(new Rgba32(255, 0, 255)    ),
+                new SixLabors.ImageSharp.Color(new Rgba32(0, 159, 0)      ),
+                new SixLabors.ImageSharp.Color(new Rgba32(255, 143, 32)   ),
+                new SixLabors.ImageSharp.Color(new Rgba32(182, 32, 0)     ),
+                new SixLabors.ImageSharp.Color(new Rgba32(0, 0, 134)      ),
+                new SixLabors.ImageSharp.Color(new Rgba32(0, 147, 255)    ),
+                new SixLabors.ImageSharp.Color(new Rgba32(255, 255, 0)    ),
+                new SixLabors.ImageSharp.Color(new Rgba32(255, 255, 255)  ),
+                new SixLabors.ImageSharp.Color(new Rgba32(231, 226, 231)  ),
+                new SixLabors.ImageSharp.Color(new Rgba32(199, 195, 199)  ),
+                new SixLabors.ImageSharp.Color(new Rgba32(143, 139, 143)  ),
+                new SixLabors.ImageSharp.Color(new Rgba32(81, 85, 81)     )
+            };
 
             // Apply dithering with the specified palette
             image.Mutate(x => x
                 .Dither(SixLabors.ImageSharp.Processing.KnownDitherings.FloydSteinberg, 1.0F, globalPalette) // Use Floyd-Steinberg dithering algorithm
             );
 
-
             // Save the dithered image
-            image.Save("output.png", new PngEncoder());
-
-
+            image.Save("temp_output.png", new PngEncoder());
         }
-
-        Console.WriteLine("Dithering complete!");
-        Console.WriteLine("Image saved to " + outputImagePath);
-
         //***************
 
-        Console.WriteLine("Converting to String");
+        Console.WriteLine("Converting picture to TI Basic string...");
 
         List<string> strVars = new List<string>();
 
         // Load the image
-        using (Bitmap bitmap = new Bitmap("output.png"))
+        using (Bitmap bitmap = new Bitmap("temp_output.png"))
         {
-
-            // Create a StreamWriter to write the characters to the file
-            using (StreamWriter writer = new StreamWriter("output.txt"))
+            long counter = 0;
+            string buffer = "";
+            // Loop through all pixels in the image
+            for (int y = 0; y < bitmap.Height; y++)
             {
-                long counter = 0;
-                string buffer = "";
-                // Loop through all pixels in the image
-                for (int y = 0; y < bitmap.Height; y++)
+                for (int x = 0; x < bitmap.Width; x++)
                 {
-                    for (int x = 0; x < bitmap.Width; x++)
+                    // Get the pixel color at (x, y)
+                    System.Drawing.Color pixelColor = bitmap.GetPixel(x, y);
+
+                    // Convert the color to a hex string (RGB)
+                    string hexColor = $"#{pixelColor.R:X2}{pixelColor.G:X2}{pixelColor.B:X2}".ToLower();
+
+                    // Map the color to the corresponding character
+                    char mappedChar = GetMappedCharacter(hexColor);
+
+                    // Write the character to the file
+                    counter++;
+                    buffer += mappedChar;
+                    if (counter % 9999 == 0)
                     {
-                        // Get the pixel color at (x, y)
-                        System.Drawing.Color pixelColor = bitmap.GetPixel(x, y);
-
-                        // Convert the color to a hex string (RGB)
-                        string hexColor = $"#{pixelColor.R:X2}{pixelColor.G:X2}{pixelColor.B:X2}".ToLower();
-
-                        // Map the color to the corresponding character
-                        char mappedChar = GetMappedCharacter(hexColor);
-
-                        // Write the character to the file
-                        writer.Write(mappedChar);
-                        counter++;
-                        buffer += mappedChar;
-                        if (counter % 9999 == 0)
-                        {
-                            strVars.Add(buffer);
-                            buffer = "";
-                        }
-
+                        strVars.Add(buffer);
+                        buffer = "";
                     }
                 }
-                strVars.Add(buffer);
             }
+            strVars.Add(buffer);
         }
 
-        Console.WriteLine("Converted to string in output.txt");
+        Console.WriteLine("Generating TI-Basic program...");
 
-        Console.WriteLine("Generating program");
-
+        // TI Basic commands can only handle up to 9999 characters. 
+        // This section saves each chunk of 9999 characters to its own Str variable
         string strImgData = "";
         int strVarId = 0;
         foreach (string s in strVars)
@@ -184,7 +123,7 @@ class Program
             strImgData += "→Str" + strVarId++;
         }
 
-
+        // Generate the TI-Basic code
         using (StreamWriter writer = new StreamWriter("program.txt"))
         {
             writer.Write(
@@ -195,7 +134,6 @@ class Program
                 "\r\nFnOff " +
                 "\r\nPlotsOff " +
                 "\r\nClrDraw" +
-                "\r\nBackgroundOn WHITE" +
                 "\r\n10→B" +
                 "\r\n11→C" +
                 "\r\n12→D" +
@@ -227,19 +165,18 @@ class Program
                 "\r\nEnd" +
 
                 "\r\n1+I→I" +
-                "\r\nexpr(sub(Str0,Ans,1" +
-                "\r\nIf Ans≠B" +
-                "\r\nPxl-On(T,S,Ans+10" +
+                "\r\nPxl-On(T,S,expr(sub(Str0,Ans,1))+10" +
                 "\r\nEnd" +
                 "\r\nEnd" +
+                "\r\nStop" +
                 "\r\nLbl D" +
                 "\r\n" + strImgData +
                 "\r\nGoto A");
         }
 
-        Console.WriteLine("Generated program to program.txt");
-
-
+        Console.WriteLine("Code saved to program.txt");
+        Console.WriteLine("Copy the code to the TI-Connect CE program editor. Then send the program to your calculator.");
+        Console.WriteLine("I ran out of time to make this project generate a .8xp file.");
     }
 
     // Resize the image to the specified width and height
@@ -278,8 +215,6 @@ class Program
             default: return 'B'; // Default to white for unknown colors
         }
     }
-
-
 }
 
 
