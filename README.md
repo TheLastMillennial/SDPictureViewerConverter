@@ -18,7 +18,7 @@ To display high resolution pictures that utilize the entire screen, use the High
 1. Ensure you have at least 90,000 bytes of free RAM.
 1. Send the file to your calculator.
 1. Run the program on your calculator.
-1. The picture will render in about 25 minutes. 
+1. The picture will render in about 10 minutes. 
     1. Note: Calculators made before 2019 will take over 30 minutes.
 1. (optional) Screenshot the picture for instant use later.
     1. Press 2nd 
