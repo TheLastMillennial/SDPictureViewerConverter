@@ -28,7 +28,11 @@ class Program
         else
         {
             Console.WriteLine("Drag and drop a PNG picture onto this exe file.\nOpen the ReadMe.txt file for more instructions.");
+#if DEBUG
+            inputImagePath = "C:\\Users\\Brian\\Pictures\\TI-84 Convert\\PuppySmall165.png";
+#else
             return;
+#endif
         }
 
         // Load the original image
@@ -81,8 +85,10 @@ class Program
         // Load the image
         using (Bitmap bitmap = new Bitmap("temp_output.png"))
         {
-            long counter = 0;
-            string buffer = "";
+            long colorCount = 1;
+            string elementBuffer = "";
+            string strListBuffer = "";
+
             // Loop through all pixels in the image
             for (int y = 0; y < bitmap.Height; y++)
             {
@@ -95,32 +101,45 @@ class Program
                     string hexColor = $"#{pixelColor.R:X2}{pixelColor.G:X2}{pixelColor.B:X2}".ToLower();
 
                     // Map the color to the corresponding character
-                    char mappedChar = GetMappedCharacter(hexColor);
+                    string mappedChar = GetMappedCharacter(hexColor);
+                    elementBuffer += mappedChar;
 
-                    // Write the character to the file
-                    counter++;
-                    buffer += mappedChar;
-                    if (counter % 9999 == 0)
+                    //each element can hold 7 colors which are 2 characters each
+                    if (elementBuffer.Length == 22)
                     {
-                        strVars.Add(buffer);
-                        buffer = "";
+                        strListBuffer += elementBuffer + ",";
+                        elementBuffer = "";
+                    }
+                    colorCount++;
+
+
+                    // Write the element to the file
+                    // 14985 = (14 characters + 1 comma) * 999 elements
+                    if (strListBuffer.Length == 22977)
+                    {
+                        strVars.Add(strListBuffer.Substring(0, strListBuffer.Length - 2));
+                        strListBuffer = "";
                     }
                 }
             }
-            strVars.Add(buffer);
+            if (elementBuffer.Length != 0)
+            {
+                strListBuffer += elementBuffer.Substring(0, elementBuffer.Length - 2);
+                strVars.Add(strListBuffer);
+            }
         }
 
         Console.WriteLine("Generating TI-Basic program...");
 
-        // TI Basic commands can only handle up to 9999 characters. 
-        // This section saves each chunk of 9999 characters to its own Str variable
+        // TI Basic lists can only handle up to 999 elements. 
+        // This section saves each chunk of 999 characters to its own list variable
         string strImgData = "";
         int strVarId = 1;
         foreach (string s in strVars)
         {
-            strImgData += "\r\n\"";
+            strImgData += "\r\n{";
             strImgData += s;
-            strImgData += "→Str" + strVarId++;
+            strImgData += "→⌊SDP" + strVarId++;
         }
 
         // Generate the TI-Basic code
@@ -186,26 +205,26 @@ class Program
 
 
     // Map the color to the corresponding character
-    static char GetMappedCharacter(string hexColor)
+    static string GetMappedCharacter(string hexColor)
     {
         switch (hexColor)
         {
-            case "#0000ff": return 'G'; // Blue
-            case "#ff0000": return 'F'; // Red
-            case "#000000": return 'D'; // Black
-            case "#ff00ff": return 'C'; // Magenta
-            case "#009f00": return 'B'; // Green
-            case "#ff8f20": return '9'; // Orange
-            case "#b62000": return '8'; // Brown
-            case "#000086": return '7'; // Navy
-            case "#0093ff": return '6'; // Light Blue
-            case "#ffff00": return '5'; // Yellow
-            case "#ffffff": return '4'; // White
-            case "#e7e2e7": return '3'; // Light Grey
-            case "#c7c3c7": return '2'; // Medium Gray
-            case "#8f8b8f": return '1'; // Gray
-            case "#515551": return '0'; // Dark Grey
-            default: return '4'; // Default to white for unknown colors
+            case "#0000ff": return "00"; // Blue
+            case "#ff0000": return "01"; // Red
+            case "#000000": return "02"; // Black
+            case "#ff00ff": return "03"; // Magenta
+            case "#009f00": return "04"; // Green
+            case "#ff8f20": return "05"; // Orange
+            case "#b62000": return "06"; // Brown
+            case "#000086": return "07"; // Navy
+            case "#0093ff": return "08"; // Light Blue
+            case "#ffff00": return "09"; // Yellow
+            case "#ffffff": return "10"; // White
+            case "#e7e2e7": return "11"; // Light Grey
+            case "#c7c3c7": return "12"; // Medium Gray
+            case "#8f8b8f": return "13"; // Gray
+            case "#515551": return "14"; // Dark Grey
+            default: return "09"; // Default to white for unknown colors
         }
     }
 }
