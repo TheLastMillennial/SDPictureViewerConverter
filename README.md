@@ -30,3 +30,12 @@ https://github.com/TheLastMillennial/HD-Picture-Viewer
 7. Run the generated program on your calculator. The program name should start with "DRAW".
 8. The picture will render in about 7 minutes. 
     1. Note: Calculators made before 2019 will take over 13 minutes.
+
+### Changelog:
+v2.0.0
+- Rewrote C# converter in Python.
+- Converter now directly outputs .8x files.
+- Rewrote calculator program to be 30% faster by using lists instead of strings.
+
+v1.0.0
+- Intial release.
