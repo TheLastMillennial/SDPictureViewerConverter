@@ -1,4 +1,6 @@
-# Standard-Definition Picture Viewer Converter
+# Standard-Definition Picture Viewer 
+
+*For the TI-84 Plus CE (-T) (Python) and the TI-83 Premium CE (Python)*
 
 Take advantage of the full TI-84 Plus CE graph screen without jailbreaking! This converter turns any PNG picture into pure TI-Basic code.
 
@@ -6,22 +8,21 @@ Take advantage of the full TI-84 Plus CE graph screen without jailbreaking! This
 
 *Photo of a puppy by Alex Glanville @Alex.takes.pics*
 
-To display high resolution pictures that utilize the entire screen, use the High-Definition Picture Viewer: https://github.com/TheLastMillennial/HD-Picture-Viewer
+To display high resolution pictures that utilize the entire screen, use the High-Definition Picture Viewer: </br>
+https://github.com/TheLastMillennial/HD-Picture-Viewer
 
 ### Requirements:
-- Python 3.10
+- Python 3.10+
     - tivars https://github.com/TI-Toolkit/tivars_lib_py/
-	- Pillow
-	- Numpy
+    - pillow
+    - numpy
     - pathlib
-- TI-84 Plus CE (-T) (Python)
-- TI-83 Premium CE (Edition Python)
 
 ### Instructions:
 1. Run SDPictureViewerConverterPy.py
 2. Enter the file path to the picture you want to convert.
 3. Press Enter.
-4. (alternative) run `python SDPictureViewerConverterPy.py <path/to/picture.png>
+    1. (alternative) run `python SDPictureViewerConverterPy.py <path/to/picture.png>`
 5. Send all generated .8xl files and the .8xp file to your calculator.
     1. Preferably send the files to the Archive.
 6. Ensure you have at least 50,000 bytes of RAM free.
